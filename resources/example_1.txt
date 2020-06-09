@@ -5,8 +5,8 @@ rust_intfic is a framework for writing interactive fiction games
 Most importantly, it lets you focus on writing a branching story with minimal code!
 
   Isn't that neat?
-*- Yeah I guess. -> yes, yup, y, sure -> neat
-*- Not really. -> no, nope, n, nah -> not_neat
+*- Yeah I guess. -> @AFFIRMATIVES -> neat
+*- Not really. -> @NEGATIVES -> not_neat
 
 :- neat
 

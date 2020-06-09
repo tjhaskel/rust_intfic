@@ -3,7 +3,7 @@ use text_io::read;
 
 use crate::game_state::GameState;
 use crate::parse_file::load_file;
-use crate::parse_input::{get_input, sanitize};
+use crate::parse_input::{get_input, query, sanitize};
 use crate::print_debug;
 use crate::write_out::{type_text, Color};
 
@@ -25,6 +25,7 @@ impl Choice {
             || self.result == *input
             || num.to_string() == *input
             || self.typed.contains(input)
+            || self.typed.starts_with("@") && query(&(self.typed[..]), input)
     }
 }
 

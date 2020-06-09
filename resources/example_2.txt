@@ -1,0 +1,14 @@
+:- start
+
+You can like story files together like this!
+-> counter_example
+
+:- counter_example
+
+Last thing, you can add to counters like so:
++- score + 50
+-> check_counter
+
+:- check_counter
+
+-r todo: check counters!

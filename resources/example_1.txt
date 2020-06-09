@@ -1,0 +1,31 @@
+:- start
+
+rust_intfic is a framework for writing interactive fiction games
+-y It supports cool stuff like "quotes" and typed, colored text!
+Most importantly, it lets you focus on writing a branching story with minimal code!
+
+  Isn't that neat?
+*- Yeah I guess. -> yes, yup, y, sure -> neat
+*- Not really. -> no, nope, n, nah -> not_neat
+
+:- neat
+
+I thought you would think so
+-> flag_example
+
+:- not_neat
+Aw, I thought it was...
+-> flag_example
+
+:- flag_example
+
+Moving on. You can set flags like so:
+?- flag_set => this should never be seen
+=- flag_set = true
+-> check_flag
+
+:- check_flag
+
+And you can retrieve flags like this!
+?- flag_set => -g This is shown because the flag was true!
+-> example_2.txt

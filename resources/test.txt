@@ -1,0 +1,46 @@
+:- start
+
+this is some test text
+-y this is all in yellow
+-b just this "quote" is in blue
+?- impossible_condition => this should never be seen
+=- test_condition = true
+
+  What test should we run?
+*- Test Option 1 -> test1, option1 -> test_1
+*- Test Option 2 -> test2, option2 -> test_2
+*- ?- impossible_condition => Test Option 3 -> test3, option3 -> test_3
+*- ?- test_condition => Test Option 4 -> test4, option4 -> test_4
+
+:- test_1
+
+You picked test 1!
+?- impossible_condition => this should never be seen
+?- test_condition => this should always be seen
+=- test_condition = false
+-> test_5
+
+:- test_2
+
+-> test_5
+
+:- test_3
+
+this should never be seen
+-> end
+
+:- test_4
+
++= score + 50
+I just added 50 to your score!
+
+  What now?
+*- Continue -> test5, option5 -> test_5
+*- End -> stop, quit -> end
+
+:- test_5
+This is test 5!
+?- test_condition => this should never be seen
+-> end
+
+:- end

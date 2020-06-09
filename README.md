@@ -18,4 +18,4 @@ Additionally, I've included some basic functions for asking yes-no questions and
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

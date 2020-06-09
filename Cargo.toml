@@ -1,8 +1,10 @@
 [package]
 name = "rust_intfic"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Trevan Haskell <dev@trevanhaskell.com>"]
 edition = "2018"
+description = "An interactive fiction framework written in Rust"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

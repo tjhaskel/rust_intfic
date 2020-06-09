@@ -305,7 +305,7 @@ fn parse_answer(input: &str) -> Option<Answer> {
     }
 }
 
-pub fn ask_direction(question: &str, game: &mut GameState) -> Direction {
+pub fn ask_direction(question: &str, game: &mut GameState) -> Option<Direction> {
     loop {
         type_text(question, Color::Cyan, true);
         if let Some(input) = get_input(game) {
@@ -314,10 +314,12 @@ pub fn ask_direction(question: &str, game: &mut GameState) -> Direction {
             }
 
             if let Some(direction) = parse_direction(&input[..]) {
-                return direction;
+                return Some(direction);
             }
 
             type_text("I didn't understand that.", Color::White, false);
+        } else {
+            return None;
         }
     }
 }

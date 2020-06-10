@@ -1,7 +1,7 @@
-# rust_intfic
+# intfic
 
-rust_intfic is a framework that allows you to write a branching story with minimal code.
-It uses story files with a custom markdown syntax that allows for the following:
+intfic is a framework that allows you to write a branching story with minimal code.
+It uses story files with a custom markup syntax that allows for the following:
 
 * Write text or specific quotes of text with different colors
 * Display options that trigger different Story Blocks or Story Files

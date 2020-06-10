@@ -15,6 +15,7 @@ I thought you would think so
 
 :- not_neat
 Aw, I thought it was...
+*- ?- flag_set => Impossible option due to flag -> flag -> end
 -> flag_example
 
 :- flag_example
@@ -29,3 +30,5 @@ Moving on. You can set flags like so:
 And you can retrieve flags like this!
 ?- flag_set => -g This is shown because the flag was true!
 -> example_2.txt
+
+:- end

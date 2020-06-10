@@ -10,7 +10,7 @@ pub mod write_out;
 mod tests;
 
 pub const DEBUG: bool = true;
-pub const FASTMODE: bool = false;
+pub const FASTMODE: bool = true;
 pub const TYPETIME: time::Duration = time::Duration::from_millis(24);
 pub const LINETIME: time::Duration = time::Duration::from_millis(1200);
 

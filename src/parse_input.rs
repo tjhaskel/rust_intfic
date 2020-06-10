@@ -176,46 +176,20 @@ const LOADS: &[&str] = &[
 
 pub fn query(dict: &str, name: &str) -> bool {
     match dict {
-        "@AFFIRMATIVES" => {
-            AFFIRMATIVES.contains(&name)
-        },
-        "@NEGATIVES" => {
-            NEGATIVES.contains(&name)
-        },
-        "@UNSURATIVES" => {
-            UNSURATIVES.contains(&name)
-        },
-        "@NORTHS" => {
-            NORTHS.contains(&name)
-        },
-        "@EASTS" => {
-            EASTS.contains(&name)
-        },
-        "@SOUTHS" => {
-            SOUTHS.contains(&name)
-        },
-        "@WESTS" => {
-            WESTS.contains(&name)
-        },
-        "@UPS" => {
-            UPS.contains(&name)
-        },
-        "@DOWNS" => {
-            DOWNS.contains(&name)
-        },
-        "@RETURNS" => {
-            RETURNS.contains(&name)
-        },
-        "@SAVES" => {
-            SAVES.contains(&name)
-        },
-        "@LOADS" => {
-            LOADS.contains(&name)
-        },
-        "@EXITS" => {
-            EXITS.contains(&name)
-        },
-        _ => false
+        "@AFFIRMATIVES" => AFFIRMATIVES.contains(&name),
+        "@NEGATIVES" => NEGATIVES.contains(&name),
+        "@UNSURATIVES" => UNSURATIVES.contains(&name),
+        "@NORTHS" => NORTHS.contains(&name),
+        "@EASTS" => EASTS.contains(&name),
+        "@SOUTHS" => SOUTHS.contains(&name),
+        "@WESTS" => WESTS.contains(&name),
+        "@UPS" => UPS.contains(&name),
+        "@DOWNS" => DOWNS.contains(&name),
+        "@RETURNS" => RETURNS.contains(&name),
+        "@SAVES" => SAVES.contains(&name),
+        "@LOADS" => LOADS.contains(&name),
+        "@EXITS" => EXITS.contains(&name),
+        _ => false,
     }
 }
 
@@ -241,17 +215,17 @@ pub fn get_input(game: &mut GameState) -> Option<String> {
                     game.save();
                     game.quit();
                     None
-                },
+                }
                 Some(Answer::No) => {
                     game.quit();
                     None
-                },
+                }
                 Some(Answer::Unsure) => {
                     type_text("I'll just save for you...", Color::White, false);
                     game.save();
                     game.quit();
                     None
-                },
+                }
                 _ => None,
             }
         }

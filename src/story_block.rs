@@ -25,7 +25,7 @@ impl Choice {
             || self.result == *input
             || num.to_string() == *input
             || self.typed.contains(input)
-            || self.typed.starts_with("@") && query(&(self.typed[..]), input)
+            || self.typed.starts_with('@') && query(&(self.typed[..]), input)
     }
 }
 
@@ -98,7 +98,7 @@ impl StoryBlock {
                 if input.is_empty() {
                     continue;
                 }
-    
+
                 let mut num = 1;
                 for choice in options {
                     if choice.match_option(&input, num) {
@@ -108,7 +108,7 @@ impl StoryBlock {
                     }
                     num += 1;
                 }
-                
+
                 if !valid_choice {
                     println!("I didn't understand that.");
                 }
@@ -119,6 +119,21 @@ impl StoryBlock {
     }
 }
 
+fn check_counter(cond: &str, game: &GameState) -> bool {
+    let mut cond_split = cond.split(' ');
+    let count_name: &str = cond_split.nth(1).unwrap();
+    let count_amount = game.get_counter(String::from(count_name));
+
+    match cond_split.next().unwrap() {
+        "<" => count_amount < cond_split.next().unwrap().parse::<i32>().unwrap(),
+        "<=" => count_amount <= cond_split.next().unwrap().parse::<i32>().unwrap(),
+        "==" => count_amount == cond_split.next().unwrap().parse::<i32>().unwrap(),
+        ">=" => count_amount >= cond_split.next().unwrap().parse::<i32>().unwrap(),
+        ">" => count_amount > cond_split.next().unwrap().parse::<i32>().unwrap(),
+        _ => false,
+    }
+}
+
 fn read_line(line: &str, game: &GameState) {
     if line.starts_with("?-") {
         let mut cond_split = line.split(" => ");
@@ -126,6 +141,14 @@ fn read_line(line: &str, game: &GameState) {
         if game.get_flag(read!("?- {}\n", cond_split.next().unwrap().bytes())) {
             read_line(&String::from(cond_split.next().unwrap()), game);
         } else if let Some(else_line) = cond_split.nth(1) {
+            read_line(&String::from(else_line), game);
+        }
+    } else if line.starts_with("#-") {
+        let mut line_split = line.split(" => ");
+
+        if check_counter(line_split.next().unwrap(), game) {
+            read_line(&String::from(line_split.next().unwrap()), game);
+        } else if let Some(else_line) = line_split.nth(1) {
             read_line(&String::from(else_line), game);
         }
     } else if line.starts_with("-y ") {
@@ -158,6 +181,16 @@ fn filter_options(options: &[Choice], game: &GameState) -> Vec<Choice> {
                     result: choice.result.clone(),
                 })
             }
+        } else if choice.text.starts_with("#-") {
+            let mut choice_split = choice.text.split(" => ");
+
+            if check_counter(choice_split.next().unwrap(), game) {
+                filtered.push(Choice {
+                    text: String::from(choice_split.next().unwrap()),
+                    typed: choice.typed.clone(),
+                    result: choice.result.clone(),
+                })
+            }
         } else {
             filtered.push(choice.clone());
         }
@@ -171,7 +204,7 @@ pub fn start_blocks(blocks: &[StoryBlock], game: &mut GameState) {
 }
 
 pub fn start_block(name: String, blocks: &[StoryBlock], game: &mut GameState) {
-    if let Some (block) = find_block(&name[..], blocks) {
+    if let Some(block) = find_block(&name[..], blocks) {
         block.read(game, blocks);
     }
 }

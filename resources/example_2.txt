@@ -1,14 +1,17 @@
 :- start
 
-You can like story files together like this!
+You can link story files together like this!
+*- #- score > 100 => Impossible option due to counter -> counter -> end
 -> counter_example
 
 :- counter_example
 
 Last thing, you can add to counters like so:
+#- score >= 50 => This isn't shown because our score is < 50!
 +- score + 50
 -> check_counter
 
 :- check_counter
 
--r todo: check counters!
+You can check counters like this:
+#- score >= 50 => -g This is shown because our score is >= 50!

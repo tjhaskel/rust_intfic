@@ -8,10 +8,10 @@ use std::fs::{create_dir_all, remove_file, File};
 use std::io::prelude::*;
 use std::process;
 
-use crate::DEBUG;
 use crate::parse_file::load_file;
 use crate::story_block::start_block;
 use crate::write_out::{type_text, Color};
+use crate::DEBUG;
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct Progress {
@@ -21,11 +21,7 @@ pub struct Progress {
 
 impl fmt::Display for Progress {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "[Story: {:?}, Block: {:?}]",
-            self.story, self.block,
-        )
+        write!(f, "[Story: {:?}, Block: {:?}]", self.story, self.block,)
     }
 }
 
@@ -100,12 +96,13 @@ impl GameState {
     }
 
     pub fn save(&mut self) {
-        let save_string = to_string_pretty(self, PrettyConfig::new()).expect("Serialization failed");
+        let save_string =
+            to_string_pretty(self, PrettyConfig::new()).expect("Serialization failed");
 
         if let Some(local_data_dir) = data_local_dir() {
             let save_dir = local_data_dir.join("rust_intfic\\");
             create_dir_all(&save_dir).expect("Couldn't create save directory");
-            
+
             let save_path = save_dir.join(format!("{}.ron", self.name));
             let display = save_path.display();
 
@@ -123,7 +120,7 @@ impl GameState {
                 Ok(_) => {
                     type_text("Game Saved!", Color::White, false);
                     self.set_flag(String::from("saved"), true);
-                },
+                }
             }
         } else {
             type_text("Error accessing local appdata", Color::Red, false);
@@ -146,7 +143,7 @@ impl GameState {
                         *self = new_state;
                         type_text("Game Loaded!", Color::White, false);
                         self.start();
-                    },
+                    }
                     Err(e) => panic!("Couldn't deserialize gamestate from {}: {}", display, e),
                 };
             } else {
@@ -187,5 +184,3 @@ impl fmt::Display for GameState {
         )
     }
 }
-
-

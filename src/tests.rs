@@ -8,13 +8,7 @@ use crate::story_block::*;
 fn test_gamestate() {
     let mut test_state: GameState = GameState::new("Test_Game");
 
-    assert_eq!(
-        test_state.progress,
-        Progress {
-            story: String::default(),
-            block: String::default(),
-        }
-    );
+    assert_eq!(test_state.progress, (String::default(), String::default()));
 
     assert_eq!(test_state.get_flag(String::from("not_set")), false);
     test_state.set_flag(String::from("test"), true);

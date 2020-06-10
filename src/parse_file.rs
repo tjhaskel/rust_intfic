@@ -14,7 +14,7 @@ fn get_file(filename: &str) -> io::Result<io::Lines<io::BufReader<File>>> {
 
 pub fn load_file(filename: &str, game: &mut GameState) -> Option<Vec<StoryBlock>> {
     if let Ok(lines) = get_file(filename) {
-        game.progress.story = String::from(filename);
+        game.progress.0 = String::from(filename);
 
         let mut blocks: Vec<StoryBlock> = Vec::new();
         let mut current_block: StoryBlock = StoryBlock::default();

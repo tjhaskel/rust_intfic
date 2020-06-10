@@ -50,7 +50,7 @@ impl StoryBlock {
     }
 
     fn read(&self, game: &mut GameState, blocks: &[StoryBlock]) {
-        game.progress.block = self.name.clone();
+        game.progress.1 = self.name.clone();
         self.read_text(game);
         self.apply_effects(game);
         self.present_options(game, blocks);

@@ -1,3 +1,5 @@
+//! game_state contains the struct representation of the GameState and all methods to update, save, load, and read from that state.
+
 use dirs::data_local_dir;
 use ron::de::from_reader;
 use ron::ser::{to_string_pretty, PrettyConfig};
@@ -13,22 +15,11 @@ use crate::story_block::start_block;
 use crate::write_out::{type_text, Color};
 use crate::DEBUG;
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-pub struct Progress {
-    pub story: String,
-    pub block: String,
-}
-
-impl fmt::Display for Progress {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "[Story: {:?}, Block: {:?}]", self.story, self.block,)
-    }
-}
-
+/// GameState holds information about the name of the game, story progress, boolean flags, and integer counters
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct GameState {
     pub name: String,
-    pub progress: Progress,
+    pub progress: (String, String),
     pub flags: HashMap<String, bool>,
     pub counters: HashMap<String, i32>,
 }
@@ -40,10 +31,7 @@ impl GameState {
 
         GameState {
             name: String::from(name_in),
-            progress: Progress {
-                story: String::default(),
-                block: String::default(),
-            },
+            progress: (String::default(), String::default()),
             flags: HashMap::new(),
             counters: counters_init,
         }
@@ -91,8 +79,8 @@ impl GameState {
     }
 
     pub fn set_progress(&mut self, story: &str, block: &str) {
-        self.progress.story = String::from(story);
-        self.progress.block = String::from(block);
+        self.progress.0 = String::from(story);
+        self.progress.1 = String::from(block);
     }
 
     pub fn save(&mut self) {
@@ -154,10 +142,10 @@ impl GameState {
     }
 
     pub fn start(&mut self) {
-        if let Some(loaded_blocks) = load_file(&(self.progress.story.clone()[..]), self) {
-            start_block(self.progress.block.clone(), &loaded_blocks, self);
+        if let Some(loaded_blocks) = load_file(&(self.progress.0.clone()[..]), self) {
+            start_block(self.progress.1.clone(), &loaded_blocks, self);
         } else {
-            panic!("Couldn't start story: {}", self.progress.story.clone());
+            panic!("Couldn't start story: {}", self.progress.0.clone());
         }
     }
 
@@ -178,8 +166,8 @@ impl fmt::Display for GameState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "  Name: {}\n  Progress: {}\n  flags: {:?}\n  counters: {:?}\n",
-            self.name, self.progress, self.flags, self.counters,
+            "  Name: {}\n  Progress: [Story: {}, Block: {}]\n  flags: {:?}\n  counters: {:?}\n",
+            self.name, self.progress.0, self.progress.1, self.flags, self.counters,
         )
     }
 }

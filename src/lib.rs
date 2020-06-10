@@ -1,3 +1,5 @@
+#![warn(missing_docs)]
+
 use std::time;
 
 pub mod game_state;

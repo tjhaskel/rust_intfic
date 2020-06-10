@@ -166,7 +166,7 @@ impl fmt::Display for GameState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "  Name: {}\n  Progress: [Story: {}, Block: {}]\n  flags: {:?}\n  counters: {:?}\n",
+            "  Name: {}\n  Progress: [Story: {}, Block: {}]\n  Flags: {:?}\n  Counters: {:?}\n",
             self.name, self.progress.0, self.progress.1, self.flags, self.counters,
         )
     }

@@ -5,4 +5,6 @@ fn main() {
 
     game.set_progress("example_1.txt", "start");
     game.start();
+
+    game.print_debug();
 }

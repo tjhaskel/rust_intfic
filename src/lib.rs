@@ -1,4 +1,5 @@
 #![warn(missing_docs)]
+#![warn(missing_doc_code_examples)]
 
 use std::time;
 

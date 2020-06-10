@@ -231,9 +231,11 @@ pub fn get_input(game: &mut GameState) -> Option<String> {
         }
     } else if SAVES.contains(&&input[..]) {
         game.save();
+        game.start();
         None
     } else if LOADS.contains(&&input[..]) {
         game.load();
+        game.start();
         None
     } else {
         Some(input)

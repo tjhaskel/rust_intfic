@@ -142,7 +142,6 @@ impl GameState {
                     Ok(new_state) => {
                         *self = new_state;
                         type_text("Game Loaded!", Color::White, false);
-                        self.start();
                     }
                     Err(e) => panic!("Couldn't deserialize gamestate from {}: {}", display, e),
                 };

@@ -1,6 +1,6 @@
 [package]
 edition = "2018"
-name = "rust_intfic"
+name = "intfic"
 version = "0.3.0"
 authors = ["Trevan Haskell <dev@trevanhaskell.com>"]
 description = "An interactive fiction framework written in Rust"

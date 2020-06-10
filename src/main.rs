@@ -1,4 +1,4 @@
-use rust_intfic::game_state::GameState;
+use intfic::game_state::GameState;
 
 fn main() {
     let mut game = GameState::new("Interactive Fiction Title");

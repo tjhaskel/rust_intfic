@@ -1,5 +1,3 @@
-//! game_state contains the struct representation of the GameState and all methods to update, save, load, and read from that state.
-
 use dirs::data_local_dir;
 use ron::de::from_reader;
 use ron::ser::{to_string_pretty, PrettyConfig};

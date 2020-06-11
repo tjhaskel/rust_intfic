@@ -13,16 +13,24 @@ use crate::story_block::start_block;
 use crate::write_out::{type_text, Color};
 use crate::DEBUG;
 
-/// GameState holds information about the name of the game, story progress, boolean flags, and integer counters
+/// GameState holds information about the name of the game, story progress, boolean flags, and integer counters.
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct GameState {
+    /// The name of your game, also used as the name for its save file.
     pub name: String,
+
+    /// A tuple representing the filename of the story file and the name of the story block curently presented.
     pub progress: (String, String),
+
+    /// A HashMap environment of named booleans that can be modified and checked against at runtime.
     pub flags: HashMap<String, bool>,
+
+    /// A HashMap environment of named integers that can be modified and checked against at runtime.
     pub counters: HashMap<String, i32>,
 }
 
 impl GameState {
+    /// Creates a new Gamestate with the given name and "score" == 0 in counters.
     pub fn new(name_in: &str) -> GameState {
         let mut counters_init = HashMap::new();
         counters_init.insert(String::from("score"), 0);
@@ -35,25 +43,30 @@ impl GameState {
         }
     }
 
+    /// Prints the current state of the game if DEBUG is enabled.
     pub fn print_debug(&self) {
         if DEBUG {
             println!("\nGame State:\n{}", self);
         }
     }
 
+    /// Sets or updates a flag in the GameState flags HashMap.
     pub fn set_flag(&mut self, name: String, val: bool) {
         self.flags.insert(name, val);
     }
 
+    /// Sets or updates a counter in the GameState flags HashMap.
     pub fn update_counter(&mut self, name: String, val: i32) {
         let new_val: i32 = self.counters[&name] + val;
         self.counters.insert(name, new_val);
     }
 
+    /// Helper to add the given i32 to the score counter.
     pub fn add_score(&mut self, n: i32) {
         self.update_counter(String::from("score"), n);
     }
 
+    /// If the given flag is in our GameState flags Hashmap, return it. Otherwise, return false.
     pub fn get_flag(&self, name: String) -> bool {
         if let Some(val) = self.flags.get(&name) {
             *val
@@ -62,6 +75,7 @@ impl GameState {
         }
     }
 
+    /// If the given counter is in our GameState counters Hashmap, return it. Otherwise, return 0.
     pub fn get_counter(&self, name: String) -> i32 {
         if let Some(val) = self.counters.get(&name) {
             *val
@@ -70,17 +84,28 @@ impl GameState {
         }
     }
 
+    /// Helper to check if a "game_over" flag is true in our GameState flags Hashmap, and quit the game if so.
     pub fn check_game_over(&self) {
         if self.get_flag(String::from("game_over")) {
             self.quit();
         }
     }
 
+    /// Helper to set the progress in our GameState to the given strings
     pub fn set_progress(&mut self, story: &str, block: &str) {
         self.progress.0 = String::from(story);
         self.progress.1 = String::from(block);
     }
 
+    /// Saves the game to "\<local data dir>\rust_intfic\\\<game name>.ron".
+    /// 
+    /// * On Windows, \<local data dir> corresponds to "C:\Users\<username>\AppData\Local".
+    /// * On macOS, \<local data dir> corresponds to "/Users/\<username>/Library/Application Support".
+    /// * On Linux, \<local data dir> corresponds to "/home/\<username>/.local/share".
+    /// 
+    /// Saving overwrites any previous save file currently.
+    /// 
+    /// Saving sets a flag in our GameState to indicate it is safe to quit.
     pub fn save(&mut self) {
         let save_string =
             to_string_pretty(self, PrettyConfig::new()).expect("Serialization failed");
@@ -113,6 +138,13 @@ impl GameState {
         }
     }
 
+    /// Loads the game from "\<local data dir>\rust_intfic\\\<game name>.ron".
+    /// 
+    /// * On Windows, \<local data dir> corresponds to "C:\Users\<username>\AppData\Local".
+    /// * On macOS, \<local data dir> corresponds to "/Users/\<username>/Library/Application Support".
+    /// * On Linux, \<local data dir> corresponds to "/home/\<username>/.local/share".
+    /// 
+    /// If the load is successful, the current GameState will be overwritten with the loaded one.
     pub fn load(&mut self) {
         if let Some(local_data_dir) = data_local_dir() {
             let save_dir = local_data_dir.join(format!("rust_intfic\\{}.ron", self.name));
@@ -139,6 +171,7 @@ impl GameState {
         }
     }
 
+    /// Searhes for the story file and block indicated in "progress", then starts reading the story there if successful.
     pub fn start(&mut self) {
         if let Some(loaded_blocks) = load_file(&(self.progress.0.clone()[..]), self) {
             start_block(self.progress.1.clone(), &loaded_blocks, self);
@@ -147,6 +180,7 @@ impl GameState {
         }
     }
 
+    /// Prints out the current GameState and then stops execution.
     pub fn quit(&self) {
         type_text("See you next time!", Color::White, false);
         self.print_debug();

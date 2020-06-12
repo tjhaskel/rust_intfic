@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use text_io::read;
 
 use crate::game_state::GameState;
 use crate::parse_file::load_file;
@@ -66,11 +65,11 @@ impl StoryBlock {
 
     fn apply_effects(&self, game: &mut GameState) {
         for (k, v) in self.flags.iter() {
-            game.set_flag(String::from(k), *v);
+            game.set_flag(k, *v);
         }
 
         for (k, v) in self.counters.iter() {
-            game.update_counter(String::from(k), *v);
+            game.update_counter(k, *v);
         }
     }
 
@@ -122,7 +121,7 @@ impl StoryBlock {
 fn check_counter(cond: &str, game: &GameState) -> bool {
     let mut cond_split = cond.split(' ');
     let count_name: &str = cond_split.nth(1).unwrap();
-    let count_amount = game.get_counter(String::from(count_name));
+    let count_amount = game.get_counter(count_name);
 
     match cond_split.next().unwrap() {
         "<" => count_amount < cond_split.next().unwrap().parse::<i32>().unwrap(),
@@ -138,7 +137,7 @@ fn read_line(line: &str, game: &GameState) {
     if line.starts_with("?-") {
         let mut cond_split = line.split(" => ");
 
-        if game.get_flag(read!("?- {}\n", cond_split.next().unwrap().bytes())) {
+        if game.get_flag(&(cond_split.next().unwrap())[3..]) {
             read_line(&String::from(cond_split.next().unwrap()), game);
         } else if let Some(else_line) = cond_split.nth(1) {
             read_line(&String::from(else_line), game);
@@ -174,7 +173,7 @@ fn filter_options(options: &[Choice], game: &GameState) -> Vec<Choice> {
         if choice.text.starts_with("?-") {
             let mut cond_split = choice.text.split(" => ");
 
-            if game.get_flag(read!("?- {}\n", cond_split.next().unwrap().bytes())) {
+            if game.get_flag(&(cond_split.next().unwrap())[3..]) {
                 filtered.push(Choice {
                     text: String::from(cond_split.next().unwrap()),
                     typed: choice.typed.clone(),
@@ -224,7 +223,7 @@ fn play_next(name: &str, game: &mut GameState, blocks: &[StoryBlock]) {
             start_blocks(&next_blocks, game);
         }
     } else if let Some(next_block) = find_block(name, blocks) {
-        game.set_flag(String::from("saved"), false);
+        game.set_flag("saved", false);
         next_block.read(game, blocks);
     } else {
         print_debug(format!("Can't find StoryBlock: {}", name));

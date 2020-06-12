@@ -31,6 +31,14 @@ pub struct GameState {
 
 impl GameState {
     /// Creates a new Gamestate with the given name and "score" == 0 in counters.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// assert_eq!(game.name, String::from("Test GameState"));
+    /// assert_eq!(game.get_counter("score"), 0);
+    /// ```
     pub fn new(name_in: &str) -> GameState {
         let mut counters_init = HashMap::new();
         counters_init.insert(String::from("score"), 0);
@@ -43,32 +51,21 @@ impl GameState {
         }
     }
 
-    /// Prints the current state of the game if DEBUG is enabled.
-    pub fn print_debug(&self) {
-        if DEBUG {
-            println!("\nGame State:\n{}", self);
-        }
-    }
-
-    /// Sets or updates a flag in the GameState flags HashMap.
-    pub fn set_flag(&mut self, name: String, val: bool) {
-        self.flags.insert(name, val);
-    }
-
-    /// Sets or updates a counter in the GameState flags HashMap.
-    pub fn update_counter(&mut self, name: String, val: i32) {
-        let new_val: i32 = self.counters[&name] + val;
-        self.counters.insert(name, new_val);
-    }
-
-    /// Helper to add the given i32 to the score counter.
-    pub fn add_score(&mut self, n: i32) {
-        self.update_counter(String::from("score"), n);
-    }
-
-    /// If the given flag is in our GameState flags Hashmap, return it. Otherwise, return false.
-    pub fn get_flag(&self, name: String) -> bool {
-        if let Some(val) = self.flags.get(&name) {
+    /// If the given flag is in our GameState flags Hashmap, return it. Otherwise return false.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// assert_eq!(game.get_flag("not_set_flag"), false);
+    /// 
+    /// game.set_flag("set_flag", true);
+    /// assert_eq!(game.get_flag("set_flag"), true);
+    /// game.set_flag("set_flag", false);
+    /// assert_eq!(game.get_flag("set_flag"), false);
+    /// ```
+    pub fn get_flag(&self, name: &str) -> bool {
+        if let Some(val) = self.flags.get(&String::from(name)) {
             *val
         } else {
             false
@@ -76,22 +73,81 @@ impl GameState {
     }
 
     /// If the given counter is in our GameState counters Hashmap, return it. Otherwise, return 0.
-    pub fn get_counter(&self, name: String) -> i32 {
-        if let Some(val) = self.counters.get(&name) {
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// assert_eq!(game.get_counter("not_set_counter"), 0);
+    /// 
+    /// game.update_counter("set_counter", 25);
+    /// assert_eq!(game.get_counter("set_counter"), 25);
+    /// game.update_counter("set_counter", 75);
+    /// assert_eq!(game.get_counter("set_counter"), 100);
+    /// ```
+    pub fn get_counter(&self, name: &str) -> i32 {
+        if let Some(val) = self.counters.get(&String::from(name)) {
             *val
         } else {
             0
         }
     }
 
-    /// Helper to check if a "game_over" flag is true in our GameState flags Hashmap, and quit the game if so.
-    pub fn check_game_over(&self) {
-        if self.get_flag(String::from("game_over")) {
-            self.quit();
-        }
+    /// Sets or updates a flag in the GameState flags HashMap.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.set_flag("test_flag", true);
+    /// assert_eq!(game.flags[&String::from("test_flag")], true);
+    /// game.set_flag("test_flag", false);
+    /// assert_eq!(game.flags[&String::from("test_flag")], false);
+    /// ```
+    pub fn set_flag(&mut self, name: &str, val: bool) {
+        self.flags.insert(String::from(name), val);
     }
 
-    /// Helper to set the progress in our GameState to the given strings
+    /// Sets or adds to a counter in the GameState flags HashMap.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.update_counter("test_counter", 50);
+    /// assert_eq!(game.counters[&String::from("test_counter")], 50);
+    /// game.update_counter("test_counter", -50);
+    /// assert_eq!(game.counters[&String::from("test_counter")], 0);
+    /// ```
+    pub fn update_counter(&mut self, name: &str, val: i32) {
+        let new_val: i32 = self.get_counter(name) + val;
+        self.counters.insert(String::from(name), new_val);
+    }
+
+    /// Helper to add the given i32 to the score counter.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// assert_eq!(game.counters[&String::from("score")], 0);
+    /// game.add_score(100);
+    /// assert_eq!(game.counters[&String::from("score")], 100);
+    /// ```
+    pub fn add_score(&mut self, n: i32) {
+        self.update_counter("score", n);
+    }
+
+    /// Helper to set the progress in our GameState to the given strings.
+    /// 
+    /// ```
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// assert_eq!(game.progress, (String::default(), String::default()));
+    /// game.set_progress("example_1.txt", "start");
+    /// assert_eq!(game.progress, (String::from("example_1.txt"), String::from("start")));
+    /// ```
     pub fn set_progress(&mut self, story: &str, block: &str) {
         self.progress.0 = String::from(story);
         self.progress.1 = String::from(block);
@@ -106,6 +162,25 @@ impl GameState {
     /// Saving overwrites any previous save file currently.
     /// 
     /// Saving sets a flag in our GameState to indicate it is safe to quit.
+    /// 
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.save();
+    /// assert_eq!(game.get_flag("game_saved"), true);
+    /// ```
+    /// "Test GameState.ron":
+    /// ```ron
+    /// (
+    ///     name: "Test GameState",
+    ///     progress: ("", ""),
+    ///     flags: {},
+    ///     counters: {
+    ///        "score": 0,
+    ///     },
+    /// )
+    /// ```
     pub fn save(&mut self) {
         let save_string =
             to_string_pretty(self, PrettyConfig::new()).expect("Serialization failed");
@@ -130,7 +205,7 @@ impl GameState {
                 Err(e) => panic!("couldn't write to {}: {}", display, e),
                 Ok(_) => {
                     type_text("Game Saved!", Color::White, false);
-                    self.set_flag(String::from("saved"), true);
+                    self.set_flag("saved", true);
                 }
             }
         } else {
@@ -145,6 +220,16 @@ impl GameState {
     /// * On Linux, \<local data dir> corresponds to "/home/\<username>/.local/share".
     /// 
     /// If the load is successful, the current GameState will be overwritten with the loaded one.
+    /// 
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.save();
+    /// game.set_progress("example_1.txt", "start");
+    /// game.load();
+    /// assert_eq!(game.progress, (String::default(), String::default()));
+    /// ```
     pub fn load(&mut self) {
         if let Some(local_data_dir) = data_local_dir() {
             let save_dir = local_data_dir.join(format!("rust_intfic\\{}.ron", self.name));
@@ -172,6 +257,14 @@ impl GameState {
     }
 
     /// Searhes for the story file and block indicated in "progress", then starts reading the story there if successful.
+    /// 
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.set_progress("example_1.txt", "start");
+    /// game.start();
+    /// ```
     pub fn start(&mut self) {
         if let Some(loaded_blocks) = load_file(&(self.progress.0.clone()[..]), self) {
             start_block(self.progress.1.clone(), &loaded_blocks, self);
@@ -180,11 +273,55 @@ impl GameState {
         }
     }
 
+    /// Helper to check if a "game_over" flag is true in our GameState flags Hashmap, and quit the game if so.
+    /// 
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.check_game_over(); // will do nothing
+    /// game.set_flag("game_over", true);
+    /// game.check_game_over(); // will call self.quit()!
+    /// ```
+    pub fn check_game_over(&self) {
+        if self.get_flag("game_over") {
+            self.quit();
+        }
+    }
+
     /// Prints out the current GameState and then stops execution.
+    /// 
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// let mut game: GameState = GameState::new("Test GameState");
+    /// 
+    /// game.quit(); // will call self.print_debug(), then stop execution.
+    /// ```
     pub fn quit(&self) {
         type_text("See you next time!", Color::White, false);
         self.print_debug();
         process::exit(0);
+    }
+
+    /// Prints the current state of the game if DEBUG is enabled.
+    /// 
+    /// The output is formatted as follows:
+    /// ```no_run
+    /// # use intfic::game_state::GameState;
+    /// # let mut game: GameState = GameState::new("Test GameState");
+    /// game.print_debug();
+    /// /*
+    /// GameState:
+    ///   Name: {}
+    ///   Progress: [Story: {}, Block: {}]
+    ///   Flags: {:?}
+    ///   Counters: {:?}
+    /// */
+    /// ```
+    pub fn print_debug(&self) {
+        if DEBUG {
+            println!("\nGame State:\n{}", self);
+        }
     }
 }
 

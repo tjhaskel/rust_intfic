@@ -10,16 +10,16 @@ fn test_gamestate() {
 
     assert_eq!(test_state.progress, (String::default(), String::default()));
 
-    assert_eq!(test_state.get_flag(String::from("not_set")), false);
-    test_state.set_flag(String::from("test"), true);
-    assert_eq!(test_state.get_flag(String::from("test")), true);
-    test_state.set_flag(String::from("test"), false);
-    assert_eq!(test_state.get_flag(String::from("test")), false);
+    assert_eq!(test_state.get_flag("not_set"), false);
+    test_state.set_flag("test", true);
+    assert_eq!(test_state.get_flag("test"), true);
+    test_state.set_flag("test", false);
+    assert_eq!(test_state.get_flag("test"), false);
 
-    assert_eq!(test_state.get_counter(String::from("not_set")), 0);
-    assert_eq!(test_state.get_counter(String::from("score")), 0);
+    assert_eq!(test_state.get_counter("not_set"), 0);
+    assert_eq!(test_state.get_counter("score"), 0);
     test_state.add_score(50);
-    assert_eq!(test_state.get_counter(String::from("score")), 50);
+    assert_eq!(test_state.get_counter("score"), 50);
 }
 
 #[test]

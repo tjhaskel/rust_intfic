@@ -206,7 +206,7 @@ pub fn get_input(game: &mut GameState) -> Option<String> {
     let input: String = sanitize(read!("{}\n"));
 
     if EXITS.contains(&&input[..]) {
-        if game.get_flag(String::from("saved")) {
+        if game.get_flag("saved") {
             game.quit();
             None
         } else {

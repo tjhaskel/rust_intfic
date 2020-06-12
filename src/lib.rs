@@ -10,7 +10,7 @@
 //! * Set flags or add to counters in the GameState
 //! * Check flags or counters in the GameState and conditionally display text or options
 //! 
-//! Additionally, I've included some basic functions for asking yes-no questions and traveling in the cardinal directions, should you prefer to take a more "text adventure" approach.
+//! Additionally, I've included some basic functions for asking yes-no questions and traveling in the cardinal directions, should you prefer to take a more "text adventure" approach with code.
 //! 
 //! ## Getting Started
 //! 

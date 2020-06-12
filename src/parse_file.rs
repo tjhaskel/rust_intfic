@@ -12,6 +12,18 @@ fn get_file(filename: &str) -> io::Result<io::Lines<io::BufReader<File>>> {
     Ok(io::BufReader::new(file).lines())
 }
 
+/// Takes the name of a story file and parses it, returning Some(Vec\<StoryBlock>) if successful
+/// 
+/// ```no_run
+/// # use intfic::game_state::GameState;
+/// # use intfic::parse_file::load_file;
+/// # use intfic::story_block::start_blocks;
+/// let mut game: GameState = GameState::new("Test GameState");
+/// 
+/// if let Some(loaded_blocks) = load_file("example_1.txt", &mut game) {
+///     start_blocks(&loaded_blocks, &mut game);
+/// }
+/// ```
 pub fn load_file(filename: &str, game: &mut GameState) -> Option<Vec<StoryBlock>> {
     if let Ok(lines) = get_file(filename) {
         game.progress.0 = String::from(filename);

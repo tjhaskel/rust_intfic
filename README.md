@@ -13,7 +13,7 @@ Additionally, I've included some basic functions for asking yes-no questions and
 ## Getting Started
 
 1. Run the example with "cargo run"
-2. Examine the example story files to get familiar with the story markdown syntax
+2. Examine the example story files to get familiar with the story markup syntax
 3. Write you own story, and update main.rs to start it!
 
 ## License

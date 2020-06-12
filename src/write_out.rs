@@ -42,10 +42,10 @@ fn contains_quote(line: &str) -> bool {
 /// Prints out a line one character at a time with a specified color
 /// 
 /// The last parameter determines how long to sleep after the line is finished typing.
-/// For options, this time is halved so the player doesnt have to wait as long.
+/// One use of this is to make options type out faster so the player doesnt have to wait as long to choose one.
 /// 
 /// If the line contains one or more quotes (some text within two quotation marks), the color will only be used inside those quotes.
-/// This allows the quthor to associate certain colors with specific characters talking.
+/// This allows the author to associate certain colors with specific characters talking.
 /// 
 /// ```no_run
 /// # use intfic::write_out::{type_text, Color};

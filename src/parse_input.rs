@@ -4,21 +4,33 @@ use crate::game_state::GameState;
 use crate::print_debug;
 use crate::write_out::{type_text, Color};
 
+/// Yes, No, or Unsure. Corresponds with a dictionary of responses that indicate one of these three answers.
 #[derive(Debug)]
 pub enum Answer {
+    /// Yes, y, yeah, sure, etc.
     Yes,
+    /// No, n, nah, nope, etc.
     No,
+    /// Not sure, idk, maybe, etc.
     Unsure,
 }
 
+/// Cardinal directions, as well as Up, Down, and Return. Corresponds with a dictionary of responses that indicate one of these seven answers.
 #[derive(Debug)]
 pub enum Direction {
+    /// North, n, forward, etc.
     North,
+    /// East, e, right, etc.
     East,
+    /// South, s, backward, etc.
     South,
+    /// West, w, left, etc.
     West,
+    /// Up, u, ascend, etc.
     Up,
+    /// Down, d, descend, etc.
     Down,
+    /// Return, r, go back, etc.
     Return,
 }
 

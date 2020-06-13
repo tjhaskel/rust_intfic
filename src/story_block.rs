@@ -6,10 +6,17 @@ use crate::parse_input::{get_input, query, sanitize};
 use crate::print_debug;
 use crate::write_out::{type_text, Color};
 
+/// A choice has some text that the player will see, a list of words to match input against, and a result
+/// 
+/// The result can be the nameof a story block in the same file, or the filename of a story file.
+/// If pointing to a new story file, the game will start at the first block in that file.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Choice {
+    /// The string that will be typed out and presented to the player for this option.
     pub text: String,
+    /// If the user types a substring of this string, the option will be selected.
     pub typed: String,
+    /// Corresponds to the name of a story block or story file
     pub result: String,
 }
 
@@ -28,12 +35,24 @@ impl Choice {
     }
 }
 
+/// StoryBlocks are atomic chunks of interactive narrative.
+/// 
+/// They have a name, a list of text that will be presented to the player,
+/// a list of options that will be presented to the player, and a series of effects that will be applied to the GameState (flag or counter alterations).
+/// 
+/// Text and options may be filtered based on conditionals that check flags and counters in the current GameState.
+/// However, such conditions must pass at the **start** of the block. e.g. you cannot set a flag and get the result you just set in the same block.
 #[derive(Debug, Default, Clone)]
 pub struct StoryBlock {
+    /// The name of the storyblock, may be referenced as the "result" of options.
     pub name: String,
+    /// The text that will be typed out line by line, your story!
     pub text: Vec<String>,
+    /// The options available to choose from by the player.
     pub options: Vec<Choice>,
+    /// The flags that will be applied to our GameState by this block.
     pub flags: HashMap<String, bool>,
+    /// The counters that will be applied to our GameState by this block.
     pub counters: HashMap<String, i32>,
 }
 

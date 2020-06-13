@@ -42,7 +42,7 @@ impl Choice {
 /// 
 /// Text and options may be filtered based on conditionals that check flags and counters in the current GameState.
 /// However, such conditions must pass at the **start** of the block. e.g. you cannot set a flag and get the result you just set in the same block.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct StoryBlock {
     /// The name of the storyblock, may be referenced as the "result" of options.
     pub name: String,
@@ -57,6 +57,24 @@ pub struct StoryBlock {
 }
 
 impl StoryBlock {
+    /// Returns an empty story block with the given name.
+    /// 
+    /// ```
+    /// # use std::collections::HashMap;
+    /// # use intfic::story_block::StoryBlock;
+    /// let mut block: StoryBlock = StoryBlock::new(String::from("Test GameState"));
+    /// 
+    /// assert_eq!(
+    ///     block, 
+    ///     StoryBlock {
+    ///         name: String::from("Test GameState"),
+    ///         text: Vec::new(),
+    ///         options: Vec::new(),
+    ///         flags: HashMap::new(),
+    ///         counters: HashMap::new(),
+    ///     }
+    /// );
+    /// ```
     pub fn new(name_in: String) -> StoryBlock {
         StoryBlock {
             name: name_in,
@@ -217,17 +235,41 @@ fn filter_options(options: &[Choice], game: &GameState) -> Vec<Choice> {
     filtered
 }
 
+/// Starts reading the first block in the given Vec\<StoryBlock>.
+/// 
+/// ```no_run
+/// # use intfic::game_state::GameState;
+/// # use intfic::parse_file::load_file;
+/// # use intfic::story_block::start_blocks;
+/// let mut game: GameState = GameState::new("Test GameState");
+/// 
+/// if let Some(loaded_blocks) = load_file("example_1.txt", &mut game) {
+///     start_blocks(&loaded_blocks, &mut game);
+/// }
+/// ```
 pub fn start_blocks(blocks: &[StoryBlock], game: &mut GameState) {
     blocks[0].read(game, blocks);
 }
 
+/// Starts reading the block with the given name in the given Vec\<StoryBlock>.
+/// 
+/// ```no_run
+/// # use intfic::game_state::GameState;
+/// # use intfic::parse_file::load_file;
+/// # use intfic::story_block::start_block;
+/// let mut game: GameState = GameState::new("Test GameState");
+/// 
+/// if let Some(loaded_blocks) = load_file("example_1.txt", &mut game) {
+///     start_block(String::from("flag_example"), &loaded_blocks, &mut game);
+/// }
+/// ```
 pub fn start_block(name: String, blocks: &[StoryBlock], game: &mut GameState) {
     if let Some(block) = find_block(&name[..], blocks) {
         block.read(game, blocks);
     }
 }
 
-pub fn find_block<'a>(name: &str, blocks: &'a [StoryBlock]) -> Option<&'a StoryBlock> {
+fn find_block<'a>(name: &str, blocks: &'a [StoryBlock]) -> Option<&'a StoryBlock> {
     for block in blocks {
         if block.name == *name {
             return Some(block);

@@ -6,9 +6,9 @@ use crate::parse_input::{get_input, query, sanitize};
 use crate::print_debug;
 use crate::write_out::{type_text, Color};
 
-/// A choice has some text that the player will see, a list of words to match input against, and a result
+/// A choice has some text that the player will see, a list of words to match input against, and a result.
 /// 
-/// The result can be the nameof a story block in the same file, or the filename of a story file.
+/// The result can be the name of a story block in the same file, or the filename of a story file.
 /// If pointing to a new story file, the game will start at the first block in that file.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Choice {

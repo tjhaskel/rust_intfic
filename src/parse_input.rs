@@ -15,7 +15,7 @@ pub enum Answer {
     Unsure,
 }
 
-/// Cardinal directions, as well as Up, Down, and Return. Corresponds with a dictionary of responses that indicate one of these seven answers.
+/// Cardinal directions, as well as Up, Down, and Return. Corresponds with a dictionary of responses..
 #[derive(Debug)]
 pub enum Direction {
     /// North, n, forward, etc.

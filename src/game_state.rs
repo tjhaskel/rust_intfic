@@ -325,12 +325,6 @@ impl GameState {
     }
 }
 
-impl Default for GameState {
-    fn default() -> Self {
-        Self::new("Default")
-    }
-}
-
 impl fmt::Display for GameState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(

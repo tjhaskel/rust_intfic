@@ -6,35 +6,6 @@ use crate::parse_input::{get_input, query, sanitize};
 use crate::print_debug;
 use crate::write_out::{type_text, Color};
 
-/// A choice has some text that the player will see, a list of words to match input against, and a result.
-/// 
-/// The result can be the name of a story block in the same file, or the filename of a story file.
-/// If pointing to a new story file, the game will start at the first block in that file.
-#[derive(Debug, Default, Clone, PartialEq)]
-pub struct Choice {
-    /// The string that will be typed out and presented to the player for this option.
-    pub text: String,
-    /// If the user types a substring of this string, the option will be selected.
-    pub typed: String,
-    /// Corresponds to the name of a story block or story file
-    pub result: String,
-}
-
-impl Choice {
-    fn present(&self, num: i32, _game: &mut GameState) {
-        let numbered_option: &str = &format!("{}) {}", num, &self.text)[..];
-        type_text(numbered_option, Color::White, true);
-    }
-
-    fn match_option(&self, input: &str, num: i32) -> bool {
-        sanitize(self.text.clone()) == *input
-            || self.result == *input
-            || num.to_string() == *input
-            || self.typed.contains(input)
-            || self.typed.starts_with('@') && query(&(self.typed[..]), input)
-    }
-}
-
 /// StoryBlocks are atomic chunks of interactive narrative.
 /// 
 /// They have a name, a list of text that will be presented to the player,
@@ -54,6 +25,39 @@ pub struct StoryBlock {
     pub flags: HashMap<String, bool>,
     /// The counters that will be applied to our GameState by this block.
     pub counters: HashMap<String, i32>,
+}
+
+/// A choice has some text that the player will see, a list of words to match input against, and a result.
+/// 
+/// The result can be the name of a story block in the same file, or the filename of a story file.
+/// If pointing to a new story file, the game will start at the first block in that file.
+#[derive(Debug, Default, Clone, PartialEq)]
+pub struct Choice {
+    /// The string that will be typed out and presented to the player for this option.
+    pub text: String,
+    /// If the user types a substring of this string, the option will be selected.
+    pub typed: String,
+    /// Corresponds to the name of a story block or story file
+    pub result: String,
+}
+
+impl Choice {
+    // Print out the text of a Choice with a number before it to produce an ordered list.
+    fn present(&self, num: i32, _game: &mut GameState) {
+        let numbered_option: &str = &format!("{}) {}", num, &self.text)[..];
+        type_text(numbered_option, Color::White, true);
+    }
+
+    // Searches the text, "typed" string, and number corresponding with an option for the given input string
+    //
+    // This determines if the player was selecting that option.
+    fn match_option(&self, input: &str, num: i32) -> bool {
+        sanitize(self.text.clone()) == *input
+            || self.result == *input
+            || num.to_string() == *input
+            || self.typed.contains(input)
+            || self.typed.starts_with('@') && query(&(self.typed[..]), input)
+    }
 }
 
 impl StoryBlock {
@@ -85,6 +89,9 @@ impl StoryBlock {
         }
     }
 
+    // Plays out the contents and effects of a block, then presents the options to the player.
+    //
+    // Also updates the GameState progress with this block's name.
     fn read(&self, game: &mut GameState, blocks: &[StoryBlock]) {
         game.progress.1 = self.name.clone();
         self.read_text(game);
@@ -92,6 +99,7 @@ impl StoryBlock {
         self.present_options(game, blocks);
     }
 
+    // Reads the text of this block line by line.
     fn read_text(&self, game: &GameState) {
         for line in self.text.iter() {
             read_line(line, game);
@@ -100,6 +108,7 @@ impl StoryBlock {
         println!();
     }
 
+    // Applies any flags or counters associated with this block to the GameState flag and counter environments.
     fn apply_effects(&self, game: &mut GameState) {
         for (k, v) in self.flags.iter() {
             game.set_flag(k, *v);
@@ -110,6 +119,11 @@ impl StoryBlock {
         }
     }
 
+    // Presents a filtered, ordered list of options for the player to choose from, and facitates the player making a choice
+    //
+    // Filters out any options that have conditions which are not satisfied in our GameState.
+    // Once the options are presented, waits for user input and then checks that input against the given options.
+    // If any match, start that option's "result" block or file. If non match, ask for another input.
     fn present_options(&self, game: &mut GameState, blocks: &[StoryBlock]) {
         let options: &Vec<Choice> = &filter_options(&self.options, game);
         let num_options = options.len();
@@ -155,6 +169,7 @@ impl StoryBlock {
     }
 }
 
+// Given a string with a proper integer comparason conditional, parse and return the result of that conditional.
 fn check_counter(cond: &str, game: &GameState) -> bool {
     let mut cond_split = cond.split(' ');
     let count_name: &str = cond_split.nth(1).unwrap();
@@ -170,6 +185,11 @@ fn check_counter(cond: &str, game: &GameState) -> bool {
     }
 }
 
+// Print out a line according to conditionals or colors prefixing it.
+//
+// Checks if a line has a conditional, and on displays the "Then" portion of the line if it passes.
+// Lines of text may also have an optional "Else" portion if using a conditional.
+// If a line apsses, ti is then checked for color indicators, and is sent to write_out with the appropriate Color enum.
 fn read_line(line: &str, game: &GameState) {
     if line.starts_with("?-") {
         let mut cond_split = line.split(" => ");
@@ -203,6 +223,7 @@ fn read_line(line: &str, game: &GameState) {
     }
 }
 
+// Filter a list of options to only include those who either have no condition or have a condition that returns true in our GameState
 fn filter_options(options: &[Choice], game: &GameState) -> Vec<Choice> {
     let mut filtered: Vec<Choice> = Vec::new();
 
@@ -253,6 +274,8 @@ pub fn start_blocks(blocks: &[StoryBlock], game: &mut GameState) {
 
 /// Starts reading the block with the given name in the given Vec\<StoryBlock>.
 /// 
+/// If no block matching the name is found, Print a debug message stating so.
+/// 
 /// ```no_run
 /// # use intfic::game_state::GameState;
 /// # use intfic::parse_file::load_file;
@@ -266,9 +289,12 @@ pub fn start_blocks(blocks: &[StoryBlock], game: &mut GameState) {
 pub fn start_block(name: String, blocks: &[StoryBlock], game: &mut GameState) {
     if let Some(block) = find_block(&name[..], blocks) {
         block.read(game, blocks);
+    } else {
+        print_debug(format!("No block found with the name {}", name));
     }
 }
 
+// Searches the given list fo blocks for one that matches the given name, returning Some(StoryBlock) if successful.
 fn find_block<'a>(name: &str, blocks: &'a [StoryBlock]) -> Option<&'a StoryBlock> {
     for block in blocks {
         if block.name == *name {
@@ -278,6 +304,7 @@ fn find_block<'a>(name: &str, blocks: &'a [StoryBlock]) -> Option<&'a StoryBlock
     None
 }
 
+// Plays the next StoryBlock or Story file based on the given name.
 fn play_next(name: &str, game: &mut GameState, blocks: &[StoryBlock]) {
     if name.ends_with(".txt") {
         if let Some(next_blocks) = load_file(name, game) {

@@ -1,3 +1,6 @@
+//! # Story File Markup Specification.
+//! todo
+
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -5,12 +8,6 @@ use text_io::read;
 
 use crate::game_state::GameState;
 use crate::story_block::{Choice, StoryBlock};
-
-fn get_file(filename: &str) -> io::Result<io::Lines<io::BufReader<File>>> {
-    let resources: &Path = Path::new("resources");
-    let file = File::open(resources.join(filename))?;
-    Ok(io::BufReader::new(file).lines())
-}
 
 /// Takes the name of a story file and parses it, returning Some(Vec\<StoryBlock>) if successful
 /// 
@@ -46,6 +43,18 @@ pub fn load_file(filename: &str, game: &mut GameState) -> Option<Vec<StoryBlock>
     }
 }
 
+// Gathers the text content of a file and saves it as a list of lines if successful.
+//
+// Story files should be placed in /resources to be found by this function.
+fn get_file(filename: &str) -> io::Result<io::Lines<io::BufReader<File>>> {
+    let resources: &Path = Path::new("resources");
+    let file = File::open(resources.join(filename))?;
+    Ok(io::BufReader::new(file).lines())
+}
+
+// Parses each line of the story file and constructs blocks that can be stored in out Vec<StoryBlock>
+//
+// Full Story File markup specification can be found above.
 fn parse_line(
     text: String,
     blocks: &mut Vec<StoryBlock>,

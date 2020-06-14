@@ -6,7 +6,7 @@ use std::time::Duration;
 
 use crate::{FASTMODE, LINETIME, TYPETIME};
 
-/// Represents the available text colors we can output
+/// Represents the available text colors we can output.
 #[derive(Debug)]
 pub enum Color {
     /// ![Blue](https://via.placeholder.com/16/0000ff/000000?text=+)
@@ -23,20 +23,6 @@ pub enum Color {
     White,
     /// ![Yellow](https://via.placeholder.com/16/ffff00/000000?text=+)
     Yellow,
-}
-
-fn contains_quote(line: &str) -> bool {
-    let mut seen_quote: bool = false;
-
-    for c in line.chars() {
-        if c == '"' && seen_quote {
-            return true;
-        } else {
-            seen_quote = true;
-        }
-    }
-
-    false
 }
 
 /// Prints out a line one character at a time with a specified color
@@ -69,6 +55,10 @@ pub fn type_text(line: &str, color: Color, fast: bool) {
     }
 }
 
+// Types out a given line all in the same given color.
+//
+// After each character, wait a slightly random amount of time based on TYPETIME.
+// After each line, wait a shorter or longer amount of time based on the given "fast" parameter and LINETIME.
 fn type_normal(line: &str, color: Color, fast: bool) {
     if line.is_empty() {
         return;
@@ -77,7 +67,6 @@ fn type_normal(line: &str, color: Color, fast: bool) {
     let mut rng = rand::thread_rng();
     for c in line.chars() {
         write_char(c, &color);
-        io::stdout().flush().unwrap();
         naptime(TYPETIME.mul_f64(rng.gen::<f64>() + 0.25));
     }
 
@@ -85,6 +74,10 @@ fn type_normal(line: &str, color: Color, fast: bool) {
     println!();
 }
 
+// Types out a given line, only using the given color to accentuate quotes in the line.
+//
+// After each character, wait a slightly random amount of time based on TYPETIME.
+// After each line, wait a shorter or longer amount of time based on the given "fast" parameter and LINETIME.
 fn type_quote(line: &str, color: Color, fast: bool) {
     if line.is_empty() {
         return;
@@ -103,7 +96,6 @@ fn type_quote(line: &str, color: Color, fast: bool) {
             write_char(c, &Color::White);
         }
 
-        io::stdout().flush().unwrap();
         naptime(TYPETIME.mul_f64(rng.gen::<f64>() + 0.25));
     }
 
@@ -111,35 +103,40 @@ fn type_quote(line: &str, color: Color, fast: bool) {
     println!();
 }
 
+// Returns true if the line contains two quotation marks.
+fn contains_quote(line: &str) -> bool {
+    let mut seen_quote: bool = false;
+
+    for c in line.chars() {
+        if c == '"' && seen_quote {
+            return true;
+        } else {
+            seen_quote = true;
+        }
+    }
+
+    false
+}
+
+// Type a single character with the given color, then flush stdout to display it.
 fn write_char(c: char, color: &Color) {
     let mut s = String::default();
     s.push(c);
 
     match color {
-        Color::Blue => {
-            print!("{}", s.blue());
-        }
-        Color::Cyan => {
-            print!("{}", s.cyan());
-        }
-        Color::Green => {
-            print!("{}", s.green());
-        }
-        Color::Purple => {
-            print!("{}", s.purple());
-        }
-        Color::Red => {
-            print!("{}", s.red());
-        }
-        Color::Yellow => {
-            print!("{}", s.yellow());
-        }
-        _ => {
-            print!("{}", s);
-        }
+        Color::White  => print!("{}", s),
+        Color::Blue   => print!("{}", s.blue()),
+        Color::Cyan   => print!("{}", s.cyan()),
+        Color::Green  => print!("{}", s.green()),
+        Color::Purple => print!("{}", s.purple()),
+        Color::Red    => print!("{}", s.red()),
+        Color::Yellow => print!("{}", s.yellow()),
     }
+
+    io::stdout().flush().unwrap();
 }
 
+// Wait the given duration, unless FASTMODE is enabled.
 fn naptime(time: Duration) {
     if !FASTMODE {
         thread::sleep(time);

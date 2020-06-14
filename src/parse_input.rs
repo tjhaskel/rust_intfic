@@ -34,6 +34,7 @@ pub enum Direction {
     Return,
 }
 
+// Dictionary for Answer::Yes
 const AFFIRMATIVES: &[&str] = &[
     "10-4",
     "affirmative",
@@ -60,6 +61,7 @@ const AFFIRMATIVES: &[&str] = &[
     "yup",
 ];
 
+// Dictionary for Answer::No
 const NEGATIVES: &[&str] = &[
     "fuck nah",
     "fuck no",
@@ -78,6 +80,7 @@ const NEGATIVES: &[&str] = &[
     "no way",
 ];
 
+// Dictionary for Answer::Unsure
 const UNSURATIVES: &[&str] = &[
     "dunno",
     "huh",
@@ -95,6 +98,7 @@ const UNSURATIVES: &[&str] = &[
     "what",
 ];
 
+// Dictionary for Direction::North
 const NORTHS: &[&str] = &[
     "forward",
     "go forward",
@@ -105,6 +109,7 @@ const NORTHS: &[&str] = &[
     "northward",
 ];
 
+// Dictionary for Direction::East
 const EASTS: &[&str] = &[
     "e",
     "east",
@@ -115,6 +120,7 @@ const EASTS: &[&str] = &[
     "right",
 ];
 
+// Dictionary for Direction::South
 const SOUTHS: &[&str] = &[
     "backward",
     "go backward",
@@ -125,6 +131,7 @@ const SOUTHS: &[&str] = &[
     "southward",
 ];
 
+// Dictionary for Direction::West
 const WESTS: &[&str] = &[
     "go left",
     "go west",
@@ -135,6 +142,7 @@ const WESTS: &[&str] = &[
     "westward",
 ];
 
+// Dictionary for Direction::Up
 const UPS: &[&str] = &[
     "ascend",
     "climb",
@@ -147,6 +155,7 @@ const UPS: &[&str] = &[
     "up",
 ];
 
+// Dictionary for Direction::Down
 const DOWNS: &[&str] = &[
     "climb down",
     "d",
@@ -157,6 +166,7 @@ const DOWNS: &[&str] = &[
     "go down",
 ];
 
+// Dictionary for Direction::Return
 const RETURNS: &[&str] = &[
     "b",
     "back",
@@ -169,6 +179,7 @@ const RETURNS: &[&str] = &[
     "run away",
 ];
 
+// Dictionary for game.quit()
 const EXITS: &[&str] = &[
     "exit",
     "exit game",
@@ -176,11 +187,13 @@ const EXITS: &[&str] = &[
     "quit game",
 ];
 
+// Dictionary for game.save()
 const SAVES: &[&str] = &[
     "save",
     "save game",
 ];
 
+// Dictionary for game.load()
 const LOADS: &[&str] = &[
     "load",
     "load game",
@@ -287,10 +300,6 @@ pub fn get_input(game: &mut GameState) -> Option<String> {
     }
 }
 
-fn print_parse_result(input: &str, parsed: &str) {
-    print_debug(format!("Input: {}, Parsed: {}", input, parsed));
-}
-
 /// Asks a given yes-no question and returns Some(Answer) if the user doesn't type a keyword.
 /// 
 /// If the user types something that does not correspond to any of the Answer dictionaries, 
@@ -323,6 +332,7 @@ pub fn ask_question(question: &str, game: &mut GameState) -> Option<Answer> {
     }
 }
 
+// Searches Answer dictionaries for given input
 fn parse_answer(input: &str) -> Option<Answer> {
     if AFFIRMATIVES.contains(&input) {
         print_parse_result(input, "Answer->Yes");
@@ -371,6 +381,7 @@ pub fn ask_direction(question: &str, game: &mut GameState) -> Option<Direction> 
     }
 }
 
+// Searches Direction dictionaries for given input
 fn parse_direction(input: &str) -> Option<Direction> {
     if NORTHS.contains(&input) {
         print_parse_result(input, "Direction->North");
@@ -397,4 +408,9 @@ fn parse_direction(input: &str) -> Option<Direction> {
         print_parse_result(input, "Direction->None");
         None
     }
+}
+
+// Helper to print the input and parsed result if DEBUG is enabled
+fn print_parse_result(input: &str, parsed: &str) {
+    print_debug(format!("Input: {}, Parsed: {}", input, parsed));
 }

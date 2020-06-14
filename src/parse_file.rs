@@ -1,5 +1,47 @@
 //! # Story File Markup Specification.
-//! todo
+//! Story files house a collection of Story Blocks that make up the narrative of your game.
+//! You can link together multiple story files to write and organize your story in a cohesive manner.
+//! 
+//! Here is an example of a simple story block:
+//! ```text
+//! :- start
+//! 
+//! It's nearly pitch black out tonight. There's a bit of light from the city up north, but no stars are peeking out through the clouds.
+//! You wonder if he'll come after you; if you're going to be in more trouble for storming out like that.
+//! What if it made him more angry? The thought makes you walk a bit faster towards the intersection ahead.
+//! As you turn you see the flash of a car's headlights from the direction you came.
+//! 
+//!   What do you do?
+//! *- Keep walking -> walk -> walk_car
+//! *- Hide from the car -> hide -> hide_car
+//! *- Run from the car -> run -> run_car
+//! ```
+//! Story Blocks have three main parts:
+//! ```text
+//! TITLE
+//! 
+//! TEXT & EFFECTS
+//! 
+//! QUESTION & OPTIONS
+//! ```
+//! # TITLE
+//! A title indicates the start of a new StoryBlock. It always starts with the characters ":- ", followed by the name of the new block.
+//! ```text
+//! :- walk_car
+//! ```
+//! # TEXT & EFFECTS
+//! The middle section of a Story Block contains the text the player will see, and any effects that will be applied to the GameState.
+//! ```
+//! He abruptly yanks the power cord out of the computer and power strip, it shuts off with a sharp buzz.
+//! =- computer_access = false
+//! -b "You aren't supposed to do that!" You protest. "It can permanently damage the machine!"
+//! Your younger brother and sister, having heard the commotion, appear at the doorway between the computer room and kitchen.
+//! -g "Dad, can we still use the computer?" Your brother asks, innocently.
+//! -y "Yes that's fine, just ask me for the cord when you need it, and make sure to give it back to me after"
+//! They seem satisfied and grin at him before heading back to the tv. You feel a pang of embarrassment.
+//! +- embarrasment + 1
+//! ```
+//! 
 
 use std::fs::File;
 use std::io::{self, BufRead};

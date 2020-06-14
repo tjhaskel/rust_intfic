@@ -3,7 +3,7 @@
 //! You can link together multiple story files to write and organize your story in a cohesive manner.
 //! 
 //! Here is an example of a simple story block:
-//! ```text
+//! <pre>
 //! :- start
 //! 
 //! It's nearly pitch black out tonight. There's a bit of light from the city up north, but no stars are peeking out through the clouds.
@@ -15,32 +15,33 @@
 //! *- Keep walking -> walk -> walk_car
 //! *- Hide from the car -> hide -> hide_car
 //! *- Run from the car -> run -> run_car
-//! ```
+//! </pre>
 //! Story Blocks have three main parts:
-//! ```text
+//! <pre>
 //! TITLE
 //! 
 //! TEXT & EFFECTS
 //! 
 //! QUESTION & OPTIONS
-//! ```
+//! </pre>
 //! # TITLE
 //! A title indicates the start of a new StoryBlock. It always starts with the characters ":- ", followed by the name of the new block.
-//! ```text
+//! <pre>
 //! :- walk_car
-//! ```
+//! </pre>
 //! # TEXT & EFFECTS
 //! The middle section of a Story Block contains the text the player will see, and any effects that will be applied to the GameState.
-//! ```
+//! <pre>
 //! He abruptly yanks the power cord out of the computer and power strip, it shuts off with a sharp buzz.
 //! =- computer_access = false
 //! -b "You aren't supposed to do that!" You protest. "It can permanently damage the machine!"
+//! ?- saved_work -> Thank god you had just saved, you can't imagine having lost all that work. -> You can't believe he did that. Why didn't you save? So much work just gone.
 //! Your younger brother and sister, having heard the commotion, appear at the doorway between the computer room and kitchen.
 //! -g "Dad, can we still use the computer?" Your brother asks, innocently.
 //! -y "Yes that's fine, just ask me for the cord when you need it, and make sure to give it back to me after"
 //! They seem satisfied and grin at him before heading back to the tv. You feel a pang of embarrassment.
 //! +- embarrasment + 1
-//! ```
+//! </pre>
 //! 
 
 use std::fs::File;
@@ -103,6 +104,7 @@ fn parse_line(
     current_block: &mut StoryBlock,
     seen_block: &mut bool,
 ) {
+    // Start of a new block, so the end of the current one!
     if text.starts_with(":-") {
         if *seen_block {
             blocks.push((*current_block).clone());
@@ -111,6 +113,24 @@ fn parse_line(
         }
 
         *current_block = StoryBlock::new(read!(":- {}\n", text.bytes()));
+
+    // Set a flag in the GameState
+    } else if text.starts_with("=-") {
+        let mut var_split: Vec<&str> = text.split(" = ").collect();
+        let var_name: String = read!("=- {}\n", var_split[0].bytes());
+        let var_value: bool = (var_split[1]).parse().unwrap();
+
+        current_block.flags.insert(var_name, var_value);
+
+    // Update a counter in the GameState
+    } else if text.starts_with("+-") {
+        let mut var_split: Vec<&str> = text.split(" + ").collect();
+        let var_name: String = read!("+- {}\n", var_split[0].bytes());
+        let var_value: i32 = (var_split[1]).parse().unwrap();
+
+        current_block.counters.insert(var_name, var_value);
+
+    // New choice
     } else if text.starts_with("*-") {
         let mut choice_split: Vec<&str> = text.split(" -> ").collect();
         let new_choice = Choice {
@@ -120,6 +140,8 @@ fn parse_line(
         };
 
         current_block.options.push(new_choice);
+
+    // No choice, just proceed to indicated block/file
     } else if text.starts_with("->") {
         let new_choice = Choice {
             text: String::default(),
@@ -128,18 +150,8 @@ fn parse_line(
         };
 
         current_block.options.push(new_choice);
-    } else if text.starts_with("=-") {
-        let mut var_split: Vec<&str> = text.split(" = ").collect();
-        let var_name: String = read!("=- {}\n", var_split[0].bytes());
-        let var_value: bool = (var_split[1]).parse().unwrap();
 
-        current_block.flags.insert(var_name, var_value);
-    } else if text.starts_with("+-") {
-        let mut var_split: Vec<&str> = text.split(" + ").collect();
-        let var_name: String = read!("+- {}\n", var_split[0].bytes());
-        let var_value: i32 = (var_split[1]).parse().unwrap();
-
-        current_block.counters.insert(var_name, var_value);
+    // Just normal text
     } else {
         current_block.text.push(text);
     }

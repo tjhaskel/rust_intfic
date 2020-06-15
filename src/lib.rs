@@ -15,7 +15,7 @@
 //! ## Getting Started
 //! 
 //! 1. Run the example with "cargo run"
-//! 2. Examine the example story files to get familiar with the story markup syntax
+//! 2. Examine the example story files and read up on the [intfic Story File Markup Specification](parse_file/index.html#story-file-markup-specification)
 //! 3. Write you own story, and update main.rs to start it!
 //! 
 //! ## License

@@ -207,15 +207,20 @@ fn read_line(line: &str, game: &GameState) {
         } else if let Some(else_line) = line_split.nth(1) {
             read_line(&String::from(else_line), game);
         }
-    } else if line.starts_with("-y ") {
-        type_text(&line[3..], Color::Yellow, false);
+    
     } else if line.starts_with("-b ") {
         type_text(&line[3..], Color::Blue, false);
+    } else if line.starts_with("-c ") {
+        type_text(&line[3..], Color::Cyan, false);
     } else if line.starts_with("-g ") {
         type_text(&line[3..], Color::Green, false);
-    } else if line.starts_with("-r ") {
+    } else if line.starts_with("-p ") {
+        type_text(&line[3..], Color::Purple, false);
+    }  else if line.starts_with("-r ") {
         type_text(&line[3..], Color::Red, false);
-    } else if line.starts_with("  ") {
+    } else if line.starts_with("-y ") {
+        type_text(&line[3..], Color::Yellow, false);
+    } else if line.starts_with("  ") { // Indicates a question
         println!();
         type_text(&line, Color::Cyan, false);
     } else {

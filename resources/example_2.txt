@@ -15,3 +15,31 @@ Last thing, you can add to counters like so:
 
 You can check counters like this:
 #- score >= 50 => -g This is shown because our score is >= 50!
+-> lose_computer
+
+:- lose_computer
+
+He abruptly yanks the power cord out of the computer and power strip, it shuts off with a sharp buzz.
+?- saved_work => Thank god you had just saved, you can't imagine having lost all that work. => You can't believe what just happened. Why didn't you save? So much work just gone.
+=- computer_access = false
+-b "You aren't supposed to do that!" You protest. "It can permanently damage the machine!"
+#- score >= 50 => -y "I'm sorry son, but I think this will help." He says calmly. => -y "You won't learn any other way!" He yells back.
+Your younger brother and sister, having heard the commotion, appear at the doorway between the computer room and kitchen.
+-g "Dad, can we still use the computer?" Your brother asks, innocently.
+-y "Yes that's fine, just ask me for the cord when you need it, and make sure to give it back to me after"
+They seem satisfied and grin at him before heading back to the tv. You feel a pang of embarrassment.
++- shame + 1
+
+  What do you do?
+*- #- strength >= 25 => Punch your dad. -> punch him, violence -> fight_dad.txt
+*- Leave the house. -> take walk, run -> leave
+*- Go to bed. ->  -> sleep
+*- ?- have_time_machine => Go five minutes in the past to fix this -> go back in time, time travel -> time_fix
+
+:- leave
+
+You leave the house. To be continued!
+
+:- sleep
+
+You fall asleep, the end!

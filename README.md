@@ -1,5 +1,7 @@
 # intfic
 
+![Rust](https://github.com/tjhaskel/rust_intfic/workflows/Rust/badge.svg)
+
 intfic is a framework that allows you to write a branching story with minimal code.
 It uses story files with a custom markup syntax that allows for the following:
 

@@ -12,10 +12,12 @@ It uses story files with a custom markup syntax that allows for the following:
 
 Additionally, I've included some basic functions for asking yes-no questions and traveling in the cardinal directions, should you prefer to take a more "text adventure" approach with code.
 
+![splash](https://raw.githubusercontent.com/tjhaskel/rust_intfic/master/resources/option.png)
+
 ## Getting Started
 
 1. Run the example with "cargo run"
-2. Examine the example story files and read up on the [intfic Story File Markup Specification](https://docs.rs/intfic/0.3.7/intfic/parse_file/index.html#story-file-markup-specification)
+2. Examine the example story files and read up on the [intfic Story File Markup Specification](https://docs.rs/intfic/0.3.8/intfic/parse_file/index.html#story-file-markup-specification)
 3. Write you own story, and update main.rs to start it!
 
 ## License

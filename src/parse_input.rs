@@ -236,6 +236,7 @@ pub fn query(dict: &str, name: &str) -> bool {
 /// # use intfic::parse_input::sanitize;
 /// 
 /// assert_eq!(sanitize(String::from("OH mOst DefiniTEly!?!")), String::from("oh most definitely"));
+/// ```
 pub fn sanitize(input: String) -> String {
     input
         .chars()

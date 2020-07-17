@@ -177,55 +177,57 @@ fn parse_line(
     current_block: &mut StoryBlock,
     seen_block: &mut bool,
 ) {
-    // Start of a new block, so the end of the current one!
-    if text.starts_with(":-") {
-        if *seen_block {
-            blocks.push((*current_block).clone());
-        } else {
-            *seen_block = true;
+    if text.len() > 1 {
+        let start: &str = &text[0..2];
+
+        match start {
+            ":-" => { // Start of a new block, so the end of the current one!
+                if *seen_block {
+                    blocks.push((*current_block).clone());
+                } else {
+                    *seen_block = true;
+                }
+        
+                *current_block = StoryBlock::new(read!(":- {}\n", text.bytes()));
+            },
+            "=-" => { // Set a flag in the GameState
+                let mut var_split: Vec<&str> = text.split(" = ").collect();
+                let var_name: String = read!("=- {}\n", var_split[0].bytes());
+                let var_value: bool = (var_split[1]).parse().unwrap();
+
+                current_block.flags.insert(var_name, var_value);
+            },
+            "+-" => { // Update a counter in the GameState
+                let mut var_split: Vec<&str> = text.split(" + ").collect();
+                let var_name: String = read!("+- {}\n", var_split[0].bytes());
+                let var_value: i32 = (var_split[1]).parse().unwrap();
+
+                current_block.counters.insert(var_name, var_value);
+            },
+            "*-" => { // New choice
+                let mut choice_split: Vec<&str> = text.split(" -> ").collect();
+                let new_choice = Choice {
+                    text: read!("*- {}\n", choice_split[0].bytes()),
+                    typed: String::from(choice_split[1]),
+                    result: String::from(choice_split[2]),
+                };
+
+                current_block.options.push(new_choice);
+            },
+            "->" => { // No choice, just proceed to indicated block/file
+                let new_choice = Choice {
+                    text: String::default(),
+                    typed: String::default(),
+                    result: read!("-> {}\n", text.bytes()),
+                };
+        
+                current_block.options.push(new_choice);
+            },
+            _ => { // Just normal text
+                current_block.text.push(text);
+            },
         }
-
-        *current_block = StoryBlock::new(read!(":- {}\n", text.bytes()));
-
-    // Set a flag in the GameState
-    } else if text.starts_with("=-") {
-        let mut var_split: Vec<&str> = text.split(" = ").collect();
-        let var_name: String = read!("=- {}\n", var_split[0].bytes());
-        let var_value: bool = (var_split[1]).parse().unwrap();
-
-        current_block.flags.insert(var_name, var_value);
-
-    // Update a counter in the GameState
-    } else if text.starts_with("+-") {
-        let mut var_split: Vec<&str> = text.split(" + ").collect();
-        let var_name: String = read!("+- {}\n", var_split[0].bytes());
-        let var_value: i32 = (var_split[1]).parse().unwrap();
-
-        current_block.counters.insert(var_name, var_value);
-
-    // New choice
-    } else if text.starts_with("*-") {
-        let mut choice_split: Vec<&str> = text.split(" -> ").collect();
-        let new_choice = Choice {
-            text: read!("*- {}\n", choice_split[0].bytes()),
-            typed: String::from(choice_split[1]),
-            result: String::from(choice_split[2]),
-        };
-
-        current_block.options.push(new_choice);
-
-    // No choice, just proceed to indicated block/file
-    } else if text.starts_with("->") {
-        let new_choice = Choice {
-            text: String::default(),
-            typed: String::default(),
-            result: read!("-> {}\n", text.bytes()),
-        };
-
-        current_block.options.push(new_choice);
-
-    // Just normal text
-    } else {
+    } else { // Just normal text
         current_block.text.push(text);
     }
 }
